@@ -64,3 +64,12 @@ for key in articles.iterkeys():
     matrices[key]['term_list'] = term_list
     matrices[key]['sim_matrix'] = sim_matrix
     assert np.shape(sim_matrix)[0] == len(term_list)
+    
+    # save it for later usage in R
+    out_path = results_path + 'sim_texts' + os.sep
+    with open(out_path + key + '_terms.txt', 'wb') as f:
+        for term in term_list:
+            f.write("%s\n" % term)
+    np.savetxt(out_path + key + '_matrix.txt', sim_matrix)
+    
+
