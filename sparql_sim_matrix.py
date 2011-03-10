@@ -16,6 +16,7 @@ import logging
 import pickle
 import numpy as np
 from gensim.models.log_entropy_model import LogEntropyModel
+from gensim.models.lsimodel import LsiModel
 from gensim import utils
 from gensim.corpora.dictionary import Dictionary
 from gensim import matutils
@@ -27,9 +28,12 @@ word_ids_extension = '_wordids.txt'
 base_path = '/Users/dedan/projects/mpi/data/'
 results_path = base_path + 'results/'
 corpus_path     = 'corpora/wiki/wiki-mar2008/'
-corpus_name     = 'head500.noblanks.cor'
+corpus_name     = 'stemmedAllCleaned-fq10-cd10.noblanks.cor'
 working_corpus  = base_path + corpus_path + corpus_name
-model_name = 'head500.noblanks.cor_log_ent.model'
+# the model used for preprocessing
+norm_model = 'stemmedAllCleaned-fq10-cd10.noblanks.cor_log_ent.model'
+# the lsi transformation
+trans_model = 'stemmedAllCleaned-fq10-cd10.noblanks.cor_500__lsi.model'
 
 matrices = {}
 
@@ -42,7 +46,10 @@ id2word, word2id = utils.loadDictionary(working_corpus + word_ids_extension)
 dictionary = Dictionary(word2id=word2id, id2word=id2word)
 
 logging.info('load the log_ent model')
-log_ent = LogEntropyModel.load(results_path + model_name)
+log_ent = LogEntropyModel.load(results_path + norm_model)
+
+logging.info('load the LSI model')
+lsi = LsiModel.load(results_path + trans_model)
 
 for key in articles.iterkeys():
 
@@ -54,7 +61,7 @@ for key in articles.iterkeys():
     sim_matrix = np.zeros((len(text_list), len(text_list)))
 
     logging.info('transform the textlist')
-    text_list = log_ent[text_list]
+    text_list = lsi[log_ent[text_list]]
 
     logging.info('compute similarity matrix')
     for i, par1 in enumerate(text_list):
