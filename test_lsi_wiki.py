@@ -22,27 +22,33 @@ logging.root.setLevel(level = logging.DEBUG)
 logging.info("running %s" % ' '.join(sys.argv))
 
 # configuration
-num_topics = 1000
-word_ids_extension ='_wordids.txt'
-model_extension ='_tfidf.model'
-lsi_extension = '_lsi.model'
+num_topics         = 100
+word_ids_extension = '_wordids.txt'
+log_ent_extension  = '_log_ent.model'
+lsi_extension      = '_lsi.model'
 
 # paths
-base_path   = '/mnt/Data/corpora/wiki/wiki-mar2008/'
-#corpus_name = 'head500.noblanks.cor' # for testing
-corpus_name =  'stemmedAllCleaned-fq10-cd10.noblanks.cor'
-working_corpus = base_path + corpus_name
-human_data_file = "/mnt/Data/corpora/lee/lee-doc2doc/similarities0-1.txt"
-lee_corpus = "/mnt/Data/corpora/lee/lee.cor"
+# base_path       = '/mnt/Data/corpora/'
+# corpus_name     = 'wiki/wiki-mar2008/stemmedAllCleaned-fq10-cd10.noblanks.cor'
+base_path       = '/Users/dedan/projects/mpi/data/'
+corpus_path     = 'corpora/wiki/wiki-mar2008/'
+corpus_name     = 'head500.noblanks.cor'
+working_corpus  = base_path + corpus_path + corpus_name
+human_data_file = base_path + "corpora/lee/lee-doc2doc/similarities0-1.txt"
+lee_corpus      = base_path + "corpora/lee/lee.cor"
+result_path     = base_path + "results/"
+
 
 logging.info('loading word mapping')
 id2word, word2id = utils.loadDictionary(working_corpus + word_ids_extension)
 dictionary = Dictionary(word2id=word2id, id2word=id2word)
+
 logging.info('loading corpus')
 corpus_bow = MmCorpus(working_corpus + '_bow.mm')
-logging.info("create tfidf model and save it to disk")
+
+logging.info("create log_ent model and save it to disk")
 tfidf = LogEntropyModel(corpus_bow, id2word=dictionary.id2token, normalize = True)
-tfidf.save(corpus_name + lsi_extension)
+tfidf.save(result_path + corpus_name + log_ent_extension)
 
 logging.info('load smal lee corpus and preprocess')
 raw_lee_texts = utils.get_txt(lee_corpus)
@@ -54,7 +60,7 @@ bow_lee_texts = [dictionary.doc2bow(text,
 
 logging.info('initialize LSI model')
 lsi = models.LsiModel(tfidf[corpus_bow], id2word=id2word, numTopics=num_topics)
-lsi.save((corpus_name + '_%i_'  + lsi_extension) % num_topics)
+lsi.save((result_path + corpus_name + '_%i_'  + lsi_extension) % num_topics)
 logging.info('transforming small lee corpus (LSI)')
 corpus_lsi = lsi[tfidf[bow_lee_texts]]
 
