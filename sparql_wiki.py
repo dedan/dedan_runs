@@ -64,7 +64,7 @@ for f in filelist:
             counter += 1
     print "\t%d words contained non ascii characters and are ommited" % counter
 
-
+    articles[k_word] = {}
     # the wikipedia api restricts queries to a length of 50
     print "\tfound %d words in file" % len(words)
     for i in range((len(words) / 50)+1):
@@ -113,23 +113,12 @@ for f in filelist:
                 data['text'] = wikicorpus.filterWiki(text.revision.text)
             in_ascii = unicodedata.normalize('NFKD', data['text']).encode('ascii', 'ignore')
             data['text'] = preprocess_string(in_ascii)
-            articles[title] = data
+            articles[k_word][title] = data
 
 f = open(results_path + "sparql_wiki.pickle", 'wb')
 pickle.dump(articles, f)
 f.close
 
 print sum(all_missing, [])
-
-
-
-
-
-
-
-
-
-
-
 
 
