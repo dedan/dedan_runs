@@ -25,7 +25,7 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s')
 logging.root.setLevel(level = logging.DEBUG)
 
 word_ids_extension = '_wordids.txt'
-base_path = '/Users/dedan/projects/mpi/data/'
+base_path = '/mnt/Data/'
 results_path = base_path + 'results/'
 corpus_path     = 'corpora/wiki/wiki-mar2008/'
 corpus_name     = 'stemmedAllCleaned-fq10-cd10.noblanks.cor'
@@ -73,7 +73,7 @@ for key in articles.iterkeys():
     assert np.shape(sim_matrix)[0] == len(term_list)
     
     # save it for later usage in R
-    out_path = results_path + 'sim_texts' + os.sep
+    out_path = results_path + 'sim_text_lsa' + os.sep
     with open(out_path + key + '_terms.txt', 'wb') as f:
         for term in term_list:
             f.write("%s\n" % term)

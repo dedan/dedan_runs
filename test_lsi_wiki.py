@@ -22,17 +22,17 @@ logging.root.setLevel(level = logging.DEBUG)
 logging.info("running %s" % ' '.join(sys.argv))
 
 # configuration
-num_topics         = 100
+num_topics         = 50
 word_ids_extension = '_wordids.txt'
 log_ent_extension  = '_log_ent.model'
 lsi_extension      = '_lsi.model'
 
 # paths
-# base_path       = '/mnt/Data/corpora/'
-# corpus_name     = 'wiki/wiki-mar2008/stemmedAllCleaned-fq10-cd10.noblanks.cor'
-base_path       = '/Users/dedan/projects/mpi/data/'
+base_path       = '/mnt/Data/'
+corpus_name     = 'stemmedAllCleaned-fq10-cd10.noblanks.cor'
+# base_path       = '/Users/dedan/projects/mpi/data/'
 corpus_path     = 'corpora/wiki/wiki-mar2008/'
-corpus_name     = 'head500.noblanks.cor'
+# corpus_name     = 'head500.noblanks.cor'
 working_corpus  = base_path + corpus_path + corpus_name
 human_data_file = base_path + "corpora/lee/lee-doc2doc/similarities0-1.txt"
 lee_corpus      = base_path + "corpora/lee/lee.cor"
@@ -60,7 +60,7 @@ bow_lee_texts = [dictionary.doc2bow(text,
 
 logging.info('initialize LSI model')
 lsi = models.LsiModel(tfidf[corpus_bow], id2word=id2word, numTopics=num_topics)
-lsi.save((result_path + corpus_name + '_%i_'  + lsi_extension) % num_topics)
+lsi.save((result_path + corpus_name + '_%i_ent'  + lsi_extension) % num_topics)
 logging.info('transforming small lee corpus (LSI)')
 corpus_lsi = lsi[tfidf[bow_lee_texts]]
 
